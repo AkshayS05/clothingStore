@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
+  createUserWithEmailAndPassword,
   signInWithRedirect,
   signInWithPopup,
   GoogleAuthProvider,
@@ -18,20 +19,25 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const fireaseApp = initializeApp(firebaseConfig);
-const provider = new GoogleAuthProvider();
-provider.setCustomParameters({ promps: "select__account" });
+const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({ promps: "select__account" });
 
 export const auth = getAuth();
-export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
+export const signInWithGooglePopup = () =>
+  signInWithPopup(auth, googleProvider);
+export const signInWithGoogleRedirect = () =>
+  signInWithRedirect(auth, googleProvider);
 // instantiate db
 export const db = getFirestore();
 //db points to the database inside the console
-export const createUserDocumentFromAuth = async (userAuth) => {
+export const createUserDocumentFromAuth = async (
+  userAuth,
+  addtionalInformation = {}
+) => {
+  if (!userAuth) return;
   const userDocRef = doc(db, "users", userAuth.uid);
 
   const userSnapshot = await getDoc(userDocRef);
-  console.log(userSnapshot);
-  console.log(userSnapshot.exists());
 
   if (!userSnapshot.exists()) {
     const { displayName, email } = userAuth;
@@ -41,10 +47,15 @@ export const createUserDocumentFromAuth = async (userAuth) => {
         displayName,
         email,
         createdAt,
+        ...addtionalInformation,
       });
     } catch (error) {
       console.log("Opps Error!", error.message);
     }
   }
   return userDocRef;
+};
+export const createAuthWithUserAndPassword = async (email, password) => {
+  if (!email || !password) return;
+  return await createUserWithEmailAndPassword(auth, email, password);
 };
