@@ -2,7 +2,7 @@ import Directory from "./components/directory/directory.component";
 import { Route, Routes } from "react-router-dom";
 import Home from "./routes/home.component";
 import Navigation from "./routes/navigation/navigation.component";
-import SignIn from "./routes/sign-in/SignIn.component";
+import Authentication from "./routes/authentication/Authentication.component";
 const Shop = () => {
   return (
     <div>
@@ -15,8 +15,8 @@ function App() {
     <Routes>
       <Route path="/" element={<Navigation />}>
         <Route index element={<Home />}></Route>
-        <Route path="/shop" element={<Shop />}></Route>
-        <Route path="/sign-in" element={<SignIn />}></Route>
+        <Route path="shop" element={<Shop />}></Route>
+        <Route path="auth" element={<Authentication />}></Route>
       </Route>
     </Routes>
   );
